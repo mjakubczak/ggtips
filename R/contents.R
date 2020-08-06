@@ -173,9 +173,7 @@ getNamesFromVarDict <- function(df, varDict, mapping) {
   if (length(validNames) == 0 && is.null(customColumn)) {
     return(NULL)
   }
-  varDict <- varDict[validNames]
-  df <- df[names(varDict)]
-  names(df) <- varDict
+  df <- df[validNames]
 
   if (!is.null(customColumn)) {
     cbind(".custom" = customColumn, df)
@@ -324,4 +322,26 @@ tooltipDataToText <- function(df, width = 50) {
     df <- t(df)
   }
   sprintf("<ul>%s</ul>", apply(df, 1, paste, collapse = ""))
+}
+
+tooltipDataToJson <- function(df, coords, width = 50){
+  df <- sapply(names(df), function(varName){
+    field <- as.character(df[[varName]])
+    if (varName == ".custom") {
+      field
+    } else {
+      wrap(field, width = width)
+    }
+  })
+  
+  df <- as.data.frame(df, stringsAsFactors = FALSE)
+  lapply(
+    X = seq_len(nrow(df)),
+    FUN = function(i){
+      c(
+        list(tooltip = as.list(df[i, , drop = FALSE])),
+        as.list(coords[i, ])
+      )
+    }
+  )
 }

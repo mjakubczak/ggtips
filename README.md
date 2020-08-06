@@ -61,6 +61,7 @@ output[["myPlot"]] <- renderUI({
   ggtips::htmlWithGivenTooltips(
     svg = res$svg,
     data = res$data,
+    varDict = varDict,
     height = height
   )
 })

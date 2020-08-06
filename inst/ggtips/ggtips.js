@@ -35,6 +35,7 @@ if (typeof jQuery === 'undefined') {
     // :: GGPlot Tooltips
     // -------------------------------------------------------------------------
     var id = 0;
+    var currentTooltip = {};
     $.fn.ggtips = function(options) {
         var settings = $.extend({
             size: 12,
@@ -114,7 +115,8 @@ if (typeof jQuery === 'undefined') {
                     $container.addClass('ggtips-show-tooltip');
                     container.style.setProperty('--color', color);
                     container.style.setProperty('--background', background);
-                    tooltip.html(p.tooltip);
+                    tooltip.html(getTooltipHtml(p.tooltip, settings.varDict));
+                    currentTooltip = p.tooltip;
                     var top = box.top - (tooltip.height() / 2) +
                         (box.height / 2) - offset.top;
                     var tooltipWidth = tooltip.prop('clientWidth');
@@ -134,6 +136,14 @@ if (typeof jQuery === 'undefined') {
             }, function(e) {
                 $container.removeClass('ggtips-show-tooltip');
             });
+            
+            if (typeof settings.clickId === 'string'){
+                $container.on('click', function(){
+                if ($container.hasClass('ggtips-show-tooltip')){
+                    Shiny.onInputChange(settings.clickId, currentTooltip);
+                }
+            });
+            }
         });
     };
 
@@ -388,6 +398,16 @@ if (typeof jQuery === 'undefined') {
         return parts.map(function(n) {
             return ('00' + parseInt(n, 10).toString(16)).slice(-2);
         });
+    }
+    
+    function getTooltipHtml(tooltipData, varDict) {
+        if (typeof tooltipData !== 'object') return tooltipData;
+        
+        var content = Object.keys(tooltipData).map(function(key){
+            return '<li>' + (key === '.custom' ? tooltipData[key] : varDict[key] + ': ' + tooltipData[key]) + '</li>';
+        });
+        
+        return '<ul>' + content.join('') + '</ul>';
     }
 
     // -------------------------------------------------------------------------

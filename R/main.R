@@ -58,6 +58,7 @@ renderWithTooltips <- function(plot,
                                width = NA,
                                height = NA,
                                customGrob = NULL,
+                               clickId = NULL,
                                ...) {
   if (!requireNamespace("shiny")) {
     stop("renderWithTooltips() requires Shiny")
@@ -79,9 +80,11 @@ renderWithTooltips <- function(plot,
     ggtips::htmlWithGivenTooltips(
       svg = res$svg,
       data = res$data,
+      varDict = varDict,
       height = height,
       width = width,
-      point.size = point.size
+      point.size = point.size,
+      clickId = clickId
     )
   }, name = "func", eval.env = parent.frame(), quoted = FALSE)
 
@@ -103,20 +106,23 @@ renderWithTooltips <- function(plot,
 #' @export
 htmlWithGivenTooltips <- function(svg,
                                   data,
+                                  varDict,
                                   height = NA,
                                   width = NA,
-                                  point.size = 10) {
+                                  point.size = 10,
+                                  clickId = NULL) {
   if (is.null(data)) {
     return(shiny::HTML(svg))
   }
   data <- list(
     data = data,
+    varDict = varDict,
     width = width,
     height = height,
-    point.size = point.size
+    point.size = point.size,
+    clickId = clickId
   )
   id <- as.numeric(Sys.time())*1000
-
   script <- paste0(
     "<script>",
     "$('[data-id=\"%s\"]').closest('.shiny-html-output').ggtips(%s);",
@@ -127,7 +133,7 @@ htmlWithGivenTooltips <- function(svg,
     getDependencies(),
     htmltools::tags$div(`data-id` = id, class = "ggtips-tooltip"),
     shiny::HTML(
-      sprintf(script, id, jsonlite::toJSON(data, auto_unbox = TRUE))
+      sprintf(script, id, jsonlite::toJSON(data, auto_unbox = TRUE, null = "null"))
     )
   )
 }
@@ -247,6 +253,7 @@ plotWithTooltips <- function(plot,
                              width = NA,
                              height = NA,
                              customGrob = NULL,
+                             clickId = NULL,
                              ...) {
   res <- ggtips::getSvgAndTooltipdata(
     plot = plot,
@@ -263,8 +270,10 @@ plotWithTooltips <- function(plot,
   ggtips::htmlWithGivenTooltips(
     svg = res$svg,
     data = res$data,
+    varDict = varDict,
     height = height,
     width = width,
-    point.size = point.size
+    point.size = point.size,
+    clickId = clickId
   )
 }

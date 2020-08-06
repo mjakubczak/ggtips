@@ -51,6 +51,7 @@ getTooltips <- function(plot,
                         plotScales, 
                         g, 
                         callback, 
+                        useJson = TRUE, # FIXME: FALSE
                         addAttributes = FALSE) {
   gb <- ggplot2::ggplot_build(plot)
   tooltipData <- getTooltipData(
@@ -89,7 +90,7 @@ getTooltips <- function(plot,
         # Geometry not supported
         return(NULL)
       }
-      tooltipContents <- tooltipDataToText(df)
+      
       coords <- lapply(layoutNames, function(layoutName) {
         getGeomCoordsForGrob(
           g,
@@ -106,7 +107,12 @@ getTooltips <- function(plot,
       } else {
         coords$coordX <- coords$coordX / plotWidth
         coords$coordY <- 1 - coords$coordY / plotHeight
-        cbind(tooltip = tooltipContents, coords)
+        
+        if (useJson){
+          tooltipDataToJson(df, coords)
+        } else {
+          cbind(tooltip = tooltipDataToText(df), coords)
+        }
       }
     },
     plot$layers,
@@ -114,6 +120,7 @@ getTooltips <- function(plot,
     geomNames,
     SIMPLIFY = FALSE
   )
+  
   # Group tooltip tables by geometries
   res <- sapply(
     uniqueGeomNames,

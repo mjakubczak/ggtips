@@ -36,6 +36,14 @@ function(input, output) {
     callback = customContentFunction,
     width = 8,
     height = 5,
-    point.size = 20
+    point.size = 20,
+    clickId = "test"
+  )
+  
+  observeEvent(
+    eventExpr = input$test,
+    handlerExpr = {
+      print(input$test)
+    }
   )
 }
