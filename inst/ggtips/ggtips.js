@@ -66,7 +66,7 @@ if (typeof jQuery === 'undefined') {
                             'line:size(' + settings.size + ')' + css,
                             'line:size(' + settings.size + ', 0)' + css,
                             'polyline:diamond:size(' + settings.size + ')',
-                            'polygon:size(' + settings.size + ')'
+                            'polygon'
                             ].join(', ');
 
             $container.proximity('unbind').proximity(selector, {
@@ -100,8 +100,7 @@ if (typeof jQuery === 'undefined') {
                         }
                     }
                 }
-
-                p = findData(settings.data.points, point);
+                p = findData(settings.data[Object.keys(settings.data)[0]], point);
                 if (p) {
                     var offset = container.getBoundingClientRect();
                     box = e.target.getBoundingClientRect();
@@ -354,21 +353,20 @@ if (typeof jQuery === 'undefined') {
         // to the cursor's current position
 
         var left, right, top, bottom, offset,
-            cX, cY, dX, dY,
-            distance = 0;
+            cX, cY, dX, dY;
 
-        offset = el.offset();
+        // el.offset() gives 0 width and 0 height for polygons
+        offset = el[0].getBoundingClientRect();
         left = offset.left;
         top = offset.top;
-        right = left + el.outerWidth();
-        bottom = top + el.outerHeight();
+        right = offset.right;
+        bottom = offset.bottom;
 
-        cX = x > right ? right : x > left ? x : left;
-        cY = y > bottom ? bottom : y > top ? y : top;
+        cX = x > right ? right : x < left ? left : x;
+        cY = y > bottom ? bottom : y < top ? top : y;
 
         dX = Math.abs( cX - x );
         dY = Math.abs( cY - y );
-
         return Math.sqrt( dX * dX + dY * dY );
     }
 

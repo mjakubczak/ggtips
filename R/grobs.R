@@ -67,7 +67,7 @@ nameToGrob <- function(gtree, layoutName) {
 getGeomsFromGrob <- function(g) {
   Filter(
     function(elem) {
-      !any(c("zeroGrob", "gTree", "null") %in% class(elem))
+      !any(c("zeroGrob", "gTree", "null") %in% class(elem)[1])
     },
     g$children
   )
@@ -295,8 +295,9 @@ getAbsoluteX <- function(gtree, element, layoutName, colWidths, unit = "mm") {
     sum(colWidths[1:(grobCol - 1)])
   }
   setFocusTo(gtree, layoutName = layoutName)
+  
   # Calculate X positions relative to the element
-  dx <- grid::convertX(element$x, unitTo = unit, valueOnly = TRUE)
+  dx <- grid::convertX(getXPositions(element), unitTo = unit, valueOnly = TRUE)
   x0 + dx
 }
 
@@ -319,8 +320,9 @@ getAbsoluteY <- function(gtree, element, layoutName, rowHeights, unit = "mm") {
     sum(rowHeights[(grobRow + 1):totalRows])
   }
   setFocusTo(gtree, layoutName = layoutName)
+  
   # Calculate Y positions relative to the element
-  dy <- grid::convertY(element$y, unitTo = unit, valueOnly = TRUE)
+  dy <- grid::convertY(getYPositions(element), unitTo = unit, valueOnly = TRUE)
   y0 + dy
 }
 
@@ -368,4 +370,24 @@ getGeomCoordsForGrob <- function(gtree,
       )
     )
   }
+}
+
+getXPositions <- function(g){
+  UseMethod("getXPositions")
+}
+getXPositions.default <- function(g){
+  g$x
+}
+getXPositions.genearrowtree <- function(g){
+  grid::unit((g$data$xmax + g$data$xmin) / 2, "native")
+}
+
+getYPositions <- function(g){
+  UseMethod("getYPositions")
+}
+getYPositions.default <- function(g){
+  g$y
+}
+getYPositions.genearrowtree <- function(g){
+  grid::unit(g$data$y, "native")
 }

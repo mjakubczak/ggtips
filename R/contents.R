@@ -79,7 +79,8 @@ getLayerGeom <- function(layer) {
     #TODO complete the list
     # GeomLine = "polyline",
     # GeomPath = "polyline",
-    GeomPoint = "points"
+    GeomPoint = "points",
+    GeomGeneArrow = "genearrowtree"
   )
   classes <- class(layer$geom)
   unique(unlist(geomDict[classes]))
