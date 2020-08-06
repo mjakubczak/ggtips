@@ -16,6 +16,7 @@
   padding: 5px;
   line-height: 1.1em;
   border-radius: 5px;
+  border: solid 1px;
 }
 /* TODO: check if this works, then remove */
 /*
@@ -27,25 +28,38 @@
   display: block;
   white-space: pre;
 }
-.ggtips-tooltip::before, .ggtips-tooltip::after {
-  border: 5px solid var(--background, black);
-  width: 0;
-  height: 0;
-  position: absolute;
-  border-top-color: transparent;
-  border-bottom-color: transparent;
-  top: 50%;
-  transform: translate(0, -50%);
+
+.ggtips-tooltip:after,
+.ggtips-tooltip:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    transform: translate(0, -50%);
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent;
 }
-.ggtips-tooltip:not(.ggtips-tooltip-right)::before {
-  content: "";
-  display: block;
-  border-left-color: transparent;
-  left: -10px;
+
+.ggtips-tooltip:not(.ggtips-tooltip-right):after {
+    border-right-color: var(--background, black);
+    border-width: 6px;
+    left: -11px;
 }
-.ggtips-tooltip.ggtips-tooltip-right::after {
-  content: "";
-  display: block;
-  border-right-color: transparent;
-  right: -10px;
+.ggtips-tooltip:not(.ggtips-tooltip-right):before {
+    border-right-color: var(--color, white);
+    border-width: 7px;
+    left: -13px;
+}
+
+.ggtips-tooltip.ggtips-tooltip-right:after {
+    border-left-color: var(--background, black);
+    border-width: 6px;
+    right: -11px;
+}
+.ggtips-tooltip.ggtips-tooltip-right:before {
+    border-left-color: var(--color, white);
+    border-width: 7px;
+    right: -13px;
 }
