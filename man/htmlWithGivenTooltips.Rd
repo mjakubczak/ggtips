@@ -4,8 +4,15 @@
 \alias{htmlWithGivenTooltips}
 \title{Render plot with given tooltips data}
 \usage{
-htmlWithGivenTooltips(svg, data, height = NA, width = NA,
-  point.size = 10)
+htmlWithGivenTooltips(
+  svg,
+  data,
+  varDict,
+  height = NA,
+  width = NA,
+  point.size = 10,
+  clickId = NULL
+)
 }
 \arguments{
 \item{svg}{A SVG plot object.}

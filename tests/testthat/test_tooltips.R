@@ -35,6 +35,6 @@ test_that("getTooltips()", {
   expect_length(points, 1L)
   tt <- points[[1]]
   expect_is(tt, "data.frame")
-  expect_named(tt, c("tooltip", "coordX", "coordY"))
+  expect_named(tt, c("tooltip", "coordX", "coordY", "rowIdx"))
   expect_equal(nrow(tt), nrow(iris))
 })

@@ -47,7 +47,7 @@ test_that("getTooltipData()", {
   expect_length(fullTooltipData, 1L)
   tt <- fullTooltipData[[1]]
   expect_is(tt, "data.frame")
-  expect_named(tt, as.character(varDict))
+  expect_named(tt, c(".rowIdx", names(varDict)))
   expect_equal(nrow(tt), nrow(iris))
   
   missingTooltipData <- ggtips:::getTooltipData(
@@ -61,6 +61,6 @@ test_that("getTooltipData()", {
   expect_length(missingTooltipData, 1L)
   tt <- missingTooltipData[[1]]
   expect_is(tt, "data.frame")
-  expect_named(tt, as.character(varDict))
+  expect_named(tt, c(".rowIdx", names(varDict)))
   expect_equal(nrow(tt), 147) # 3 rows with NAs
 })

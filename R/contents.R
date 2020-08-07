@@ -169,17 +169,18 @@ getNamesFromVarDict <- function(df, varDict, mapping) {
   customColumn <- if (".custom" %in% dfNames) {
     df[[".custom"]]
   }
+  rowIdxs <- df[[".rowIdx"]]
   validNames <- intersect(names(varDict), dfNames)
   if (length(validNames) == 0 && is.null(customColumn)) {
     return(NULL)
   }
   df <- df[validNames]
-
+  
   if (!is.null(customColumn)) {
-    cbind(".custom" = customColumn, df)
-  } else {
-    df
+    df <- cbind(".custom" = customColumn, df)
   }
+  
+  cbind(".rowIdx" = rowIdxs, df)
 }
 
 #' As trans
@@ -273,6 +274,8 @@ roundValues <- function(data) {
 removeRowsWithNA <- function(data, mapping, layers) {
   mapply(
     FUN = function(df, map, layer){
+      df[[".rowIdx"]] <- seq_len(nrow(df))
+      
       reqAes <- c(layer$geom$required_aes, layer$geom$non_missing_aes)
       reqAes <- sapply(reqAes, function(x){
         if (x %in% names(map)) map[[x]] else x
@@ -308,7 +311,15 @@ getTooltipData <- function(plot, built, varDict, plotScales, callback) {
 
 #' Convert tooltip data to character strings
 #'
-tooltipDataToText <- function(df, width = 50) {
+tooltipDataToText <- function(df, varDict, width = 50) {
+  names(df) <- sapply(names(df), function(x){
+    if (x %in% names(varDict)) {
+      varDict[[x]] 
+    } else {
+      x
+    }
+  }, USE.NAMES = FALSE)
+  
   df <- sapply(names(df), function(varName) {
     text <- if (varName == ".custom") {
       df[[varName]]

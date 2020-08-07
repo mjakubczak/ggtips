@@ -75,6 +75,7 @@ renderWithTooltips <- function(plot,
       width = width,
       height = height,
       customGrob = customGrob,
+      useJson = !is.null(clickId),
       ...
     )
     ggtips::htmlWithGivenTooltips(
@@ -265,6 +266,7 @@ plotWithTooltips <- function(plot,
     width = width,
     height = height,
     customGrob = customGrob,
+    useJson = !is.null(clickId),
     ...
   )
   ggtips::htmlWithGivenTooltips(

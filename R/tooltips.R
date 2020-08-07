@@ -43,7 +43,9 @@
 #' values in tooltips. If NULL (default), values are displayed "as is".
 #' @param callback Callback function for adding custom content to the tooltips
 #' (see the example app).
-#' @param addAttributes Logical parameter determinig whether extra geom 
+#' @param useJson Logical parameter determining whether to use JSON format
+#' when passing tooltip data to frontend.
+#' @param addAttributes Logical parameter determining whether extra geom 
 #' attributes should be add to tooltip object.
 #'
 getTooltips <- function(plot, 
@@ -51,7 +53,7 @@ getTooltips <- function(plot,
                         plotScales, 
                         g, 
                         callback, 
-                        useJson = TRUE, # FIXME: FALSE
+                        useJson = FALSE,
                         addAttributes = FALSE) {
   gb <- ggplot2::ggplot_build(plot)
   tooltipData <- getTooltipData(
@@ -107,11 +109,13 @@ getTooltips <- function(plot,
       } else {
         coords$coordX <- coords$coordX / plotWidth
         coords$coordY <- 1 - coords$coordY / plotHeight
+        coords$rowIdx <- df[[".rowIdx"]]
+        df[[".rowIdx"]] <- NULL
         
         if (useJson){
           tooltipDataToJson(df, coords)
         } else {
-          cbind(tooltip = tooltipDataToText(df), coords)
+          cbind(tooltip = tooltipDataToText(df, varDict), coords)
         }
       }
     },
@@ -158,7 +162,9 @@ getTooltips <- function(plot,
 #' @param ggPlotObj optional, used if plot is a customGrob.
 #' @param callback Callback function for adding custom content to the tooltips
 #' (see the example app).
-#' @param addAttributes Logical parameter determinig whether extra geom 
+#' @param useJson Logical parameter determining whether to use JSON format
+#' when passing tooltip data to frontend.
+#' @param addAttributes Logical parameter determining whether extra geom 
 #' attributes should be add to tooltip object.
 #'
 #' @return A list.
@@ -173,6 +179,7 @@ formals(saveAndGetTooltips) <- c(
     g = , 
     ggPlotObj = NULL, 
     callback = NULL, 
+    useJson = FALSE,
     addAttributes = FALSE
   )
 )
@@ -183,6 +190,7 @@ body(saveAndGetTooltips)[[length(body(saveAndGetTooltips))]] <- quote(
     plotScales = plotScales,
     g = g,
     callback = callback,
+    useJson = useJson,
     addAttributes = addAttributes
   )
 )

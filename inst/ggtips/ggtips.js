@@ -116,7 +116,10 @@ if (typeof jQuery === 'undefined') {
                     container.style.setProperty('--color', color);
                     container.style.setProperty('--background', background);
                     tooltip.html(getTooltipHtml(p.tooltip, settings.varDict));
-                    currentTooltip = p.tooltip;
+                    currentTooltip = {
+                        rowIdx: p.rowIdx,
+                        tooltip: p.tooltip
+                    };
                     var top = box.top - (tooltip.height() / 2) +
                         (box.height / 2) - offset.top;
                     var tooltipWidth = tooltip.prop('clientWidth');
@@ -404,7 +407,7 @@ if (typeof jQuery === 'undefined') {
         if (typeof tooltipData !== 'object') return tooltipData;
         
         var content = Object.keys(tooltipData).map(function(key){
-            return '<li>' + (key === '.custom' ? tooltipData[key] : varDict[key] + ': ' + tooltipData[key]) + '</li>';
+            return '<li>' + (key === '.custom' ? tooltipData[key] : (varDict[key] + ': ' + tooltipData[key])) + '</li>';
         });
         
         return '<ul>' + content.join('') + '</ul>';
