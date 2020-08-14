@@ -4,7 +4,7 @@
 \alias{tooltipDataToText}
 \title{Convert tooltip data to character strings}
 \usage{
-tooltipDataToText(df, width = 50)
+tooltipDataToText(df, varDict, width = 50)
 }
 \description{
 Convert tooltip data to character strings
