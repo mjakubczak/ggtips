@@ -58,7 +58,7 @@ renderWithTooltips <- function(plot,
                                width = NA,
                                height = NA,
                                customGrob = NULL,
-                               clickId = NULL,
+                               click = NULL,
                                ...) {
   if (!requireNamespace("shiny")) {
     stop("renderWithTooltips() requires Shiny")
@@ -75,7 +75,7 @@ renderWithTooltips <- function(plot,
       width = width,
       height = height,
       customGrob = customGrob,
-      useJson = !is.null(clickId),
+      useJson = !is.null(click),
       ...
     )
     ggtips::htmlWithGivenTooltips(
@@ -85,7 +85,7 @@ renderWithTooltips <- function(plot,
       height = height,
       width = width,
       point.size = point.size,
-      clickId = clickId
+      click = click
     )
   }, name = "func", eval.env = parent.frame(), quoted = FALSE)
 
@@ -111,9 +111,13 @@ htmlWithGivenTooltips <- function(svg,
                                   height = NA,
                                   width = NA,
                                   point.size = 10,
-                                  clickId = NULL) {
+                                  click = NULL) {
   if (is.null(data)) {
     return(shiny::HTML(svg))
+  }
+  
+  if (is.character(click)){
+    click <- clickOpts(id = click)
   }
   data <- list(
     data = data,
@@ -121,7 +125,7 @@ htmlWithGivenTooltips <- function(svg,
     width = width,
     height = height,
     point.size = point.size,
-    clickId = clickId
+    click = click
   )
   id <- as.numeric(Sys.time())*1000
   script <- paste0(
@@ -254,7 +258,7 @@ plotWithTooltips <- function(plot,
                              width = NA,
                              height = NA,
                              customGrob = NULL,
-                             clickId = NULL,
+                             click = NULL,
                              ...) {
   res <- ggtips::getSvgAndTooltipdata(
     plot = plot,
@@ -266,7 +270,7 @@ plotWithTooltips <- function(plot,
     width = width,
     height = height,
     customGrob = customGrob,
-    useJson = !is.null(clickId),
+    useJson = !is.null(click),
     ...
   )
   ggtips::htmlWithGivenTooltips(
@@ -276,6 +280,16 @@ plotWithTooltips <- function(plot,
     height = height,
     width = width,
     point.size = point.size,
-    clickId = clickId
+    click = click
+  )
+}
+
+#' @export
+clickOpts <- function(id, jsCallback = NULL){
+  if (is.null(id)) return()
+  
+  list(
+    id = id,
+    callback = jsCallback
   )
 }

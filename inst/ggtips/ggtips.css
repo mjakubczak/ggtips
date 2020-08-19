@@ -63,3 +63,7 @@
     border-width: 7px;
     right: -13px;
 }
+
+.ggtips-show-tooltip.ggtips-clickable {
+  cursor: pointer;
+}

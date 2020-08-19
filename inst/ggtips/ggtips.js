@@ -36,6 +36,7 @@ if (typeof jQuery === 'undefined') {
     // -------------------------------------------------------------------------
     var id = 0;
     var currentTooltip = {};
+    var currentPoint;
     $.fn.ggtips = function(options) {
         var settings = $.extend({
             size: 12,
@@ -120,6 +121,7 @@ if (typeof jQuery === 'undefined') {
                         rowIdx: p.rowIdx,
                         tooltip: p.tooltip
                     };
+                    currentPoint = $e;
                     var top = box.top - (tooltip.height() / 2) +
                         (box.height / 2) - offset.top;
                     var tooltipWidth = tooltip.prop('clientWidth');
@@ -140,12 +142,20 @@ if (typeof jQuery === 'undefined') {
                 $container.removeClass('ggtips-show-tooltip');
             });
             
-            if (typeof settings.clickId === 'string'){
-                $container.on('click', function(){
-                if ($container.hasClass('ggtips-show-tooltip')){
-                    Shiny.onInputChange(settings.clickId, currentTooltip);
+            if (typeof settings.click === 'object' && typeof settings.click.id === 'string'){
+                $container.addClass('ggtips-clickable');
+                var clickCallback;
+                if (typeof settings.click.callback === 'string'){
+                    clickCallback = window[settings.click.callback];
                 }
-            });
+                $container.off('click').on('click', function(){
+                    if ($container.hasClass('ggtips-show-tooltip')){
+                        if (typeof clickCallback === 'function'){
+                            clickCallback(currentPoint);
+                        }
+                        Shiny.onInputChange(settings.click.id, currentTooltip);
+                    }
+                });
             }
         });
     };

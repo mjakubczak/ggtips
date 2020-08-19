@@ -11,7 +11,7 @@ htmlWithGivenTooltips(
   height = NA,
   width = NA,
   point.size = 10,
-  clickId = NULL
+  click = NULL
 )
 }
 \arguments{

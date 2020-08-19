@@ -14,7 +14,7 @@ renderWithTooltips(
   width = NA,
   height = NA,
   customGrob = NULL,
-  clickId = NULL,
+  click = NULL,
   ...
 )
 }
