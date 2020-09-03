@@ -153,6 +153,8 @@ if (typeof jQuery === 'undefined') {
                         if (typeof clickCallback === 'function'){
                             clickCallback(currentPoint);
                         }
+                        // in case the same tooltip is clicked twice
+                        currentTooltip.timestamp = new Date(); 
                         Shiny.onInputChange(settings.click.id, currentTooltip);
                     }
                 });
